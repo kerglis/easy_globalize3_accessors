@@ -1,20 +1,33 @@
 require 'globalize3'
 
+class Object
+  def metaclass
+    class << self; self; end
+  end
+end
+
 module EasyGlobalize3Accessors
 
   def globalize_accessors(options = {})
     options.reverse_merge!(:locales => I18n.available_locales, :attributes => translated_attribute_names)
+
+    metaclass.instance_eval do
+      mattr_accessor :easy_attributes_list, :easy_locales
+    end
+
+    send(:"easy_attributes_list=", [])
+    send(:"easy_locales=", options[:locales])
 
     each_attribute_and_locale(options) do |attr_name, locale|
       define_accessors(attr_name, locale)
     end
   end
 
-
   private
-    
 
   def define_accessors(attr_name, locale)
+    easy_attributes_list << "#{attr_name}_#{locale}".to_sym
+
     define_getter(attr_name, locale)
     define_setter(attr_name, locale)
   end

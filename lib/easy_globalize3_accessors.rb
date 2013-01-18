@@ -19,6 +19,7 @@ module EasyGlobalize3Accessors
     send(:"easy_locales=", options[:locales])
 
     each_attribute_and_locale(options) do |attr_name, locale|
+      send(:attr_accessible, "#{attr_name}_#{locale}".to_sym)
       define_accessors(attr_name, locale)
     end
   end

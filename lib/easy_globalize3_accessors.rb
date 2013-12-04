@@ -9,7 +9,7 @@ end
 module EasyGlobalize3Accessors
 
   def globalize_accessors(options = {})
-    options.reverse_merge!(:locales => I18n.available_locales, :attributes => translated_attribute_names)
+    options.reverse_merge!(locales: I18n.available_locales, attributes: translated_attribute_names)
 
     metaclass.instance_eval do
       mattr_accessor :easy_attributes_list, :easy_locales
@@ -19,7 +19,7 @@ module EasyGlobalize3Accessors
     send(:"easy_locales=", options[:locales])
 
     each_attribute_and_locale(options) do |attr_name, locale|
-      send(:attr_accessible, "#{attr_name}_#{locale}".to_sym)
+      #send(:attr_accessible, "#{attr_name}_#{locale}".to_sym)
       define_accessors(attr_name, locale)
     end
   end
@@ -36,13 +36,13 @@ module EasyGlobalize3Accessors
 
   def define_getter(attr_name, locale)
     define_method :"#{attr_name}_#{locale}" do
-      read_attribute(attr_name, :locale => locale)
+      read_attribute(attr_name, locale: locale)
     end
   end
 
   def define_setter(attr_name, locale)
     define_method :"#{attr_name}_#{locale}=" do |value|
-      write_attribute(attr_name, value, :locale => locale)
+      write_attribute(attr_name, value, locale: locale)
     end
   end
 
